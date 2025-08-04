@@ -22,6 +22,7 @@ public class Controller {
     private final LongUpDownCounter upDownCounter;
     private final DoubleGauge guageA;
 
+    String port = "8080";
     @GetMapping("/a")
     public String a() {
         increase(5, 2.5, 1);
@@ -29,10 +30,10 @@ public class Controller {
     }
 
     private void increase(int value, double value1, int value2) {
-        this.aCountr.add(value);
-        this.aCountr.add(4, Attributes.of(AttributeKey.stringKey("xxxB"), "yyyC"));
-        this.hHistoGram.record(value1,Attributes.of(AttributeKey.stringKey("xxx"), "yyy"));
-        this.bCountr.add(value2);
+        this.aCountr.add(value, Attributes.of(AttributeKey.stringKey("XPort"), port));
+        this.aCountr.add(4, Attributes.of(AttributeKey.stringKey("XPort"), port));
+        this.hHistoGram.record(value1,Attributes.of(AttributeKey.stringKey("XPort"), port));
+        this.bCountr.add(value2, Attributes.of(AttributeKey.stringKey("XPort"), port));
         this.bCountr.add(4, Attributes.of(AttributeKey.stringKey("xxxN"), "yyyM"));
 
     }
@@ -44,8 +45,8 @@ public class Controller {
             multiplier = -1; // If random is greater than 5, set multiplier to 2
         }
 
-        this.upDownCounter.add((long) (upDownCounterValue* multiplier));
-        this.guageA.set(random*guageValue);
+        this.upDownCounter.add((long) (upDownCounterValue* multiplier), Attributes.of(AttributeKey.stringKey("XPort"), port));
+        this.guageA.set(random*guageValue, Attributes.of(AttributeKey.stringKey("XPort"), port));
     }
     @GetMapping("/b")
     public String b() {
@@ -54,35 +55,39 @@ public class Controller {
     }
 
     public Controller(OpenTelemetry openTelemetry){
-        aCountr = openTelemetry.getMeter("dvd-metrics")
+        port = System.getenv("SERVER_PORT");
+        System.out.println("****************************************************");
+        System.out.println("OpenTelemetry is running on port: " + port);
+        System.out.println("****************************************************");
+
+        aCountr = openTelemetry.getMeter("david-metrics")
                 .counterBuilder("a-counter")
                 .setDescription("A custom counter for demonstration purposes")
                 .setUnit("X")
                 .build();
 
-        bCountr = openTelemetry.getMeter("dvd-metrics")
+        bCountr = openTelemetry.getMeter("david-metrics")
                 .counterBuilder("b-counter")
                 .setDescription("A custom counter for demonstration purposes")
                 .setUnit("X")
                 .build();
 
-        hHistoGram = openTelemetry.getMeter("dvd-metrics")
+        hHistoGram = openTelemetry.getMeter("david-metrics")
                 .histogramBuilder("h-histogram")
                 .setDescription("A custom histogram for demonstration purposes")
                 .setUnit("X")
                 .build();
         hHistoGram.record(0.5, Attributes.of(AttributeKey.stringKey("xxx"), "yyy"));
-        upDownCounter = openTelemetry.getMeter("dvd-metrics")
+        upDownCounter = openTelemetry.getMeter("david-metrics")
                 .upDownCounterBuilder("a-up-down-counter")
                 .setDescription("A custom histogram for demonstration purposes")
                 .setUnit("X")
                 .build();
-        guageA = openTelemetry.getMeter("dvd-metrics")
+        guageA = openTelemetry.getMeter("david-metrics")
                 .gaugeBuilder("a-guage")
                 .setDescription("A custom histogram for demonstration purposes")
                 .setUnit("X")
                 .build();
-        guageA.set(0.0);
         new Thread(() -> {
             while (true) {
                 try {
