@@ -12,4 +12,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // Micrometer with OpenTelemetry
+    implementation 'io.micrometer:micrometer-registry-otlp'
 }
