@@ -15,26 +15,51 @@ import java.util.Random;
 @RestController
 public class Controller {
 
-    private final LongCounter aCountr;
+    private final LongCounter toolCallsCounter;
 
-    private final LongCounter bCountr;
-    private final DoubleHistogram hHistoGram;
+    private final LongCounter modelCallsCounter;
+    private final DoubleHistogram modelResponseTime;
+    private final DoubleHistogram toolResponseTime;
     private final LongUpDownCounter upDownCounter;
     private final DoubleGauge guageA;
 
     String port = "8080";
     @GetMapping("/a")
     public String a() {
-        increase(5, 2.5, 1);
+        increase(5, 2, 1);
         return "pong";
     }
 
-    private void increase(int value, double value1, int value2) {
-        this.aCountr.add(value, Attributes.of(AttributeKey.stringKey("XPort"), port));
-        this.aCountr.add(4, Attributes.of(AttributeKey.stringKey("XPort"), port));
-        this.hHistoGram.record(value1,Attributes.of(AttributeKey.stringKey("XPort"), port));
-        this.bCountr.add(value2, Attributes.of(AttributeKey.stringKey("XPort"), port));
-        this.bCountr.add(4, Attributes.of(AttributeKey.stringKey("xxxN"), "yyyM"));
+    private void increase(int value1, int value2, int value3) {
+
+        double random1 = Math.random() * 500; // Random double value between 0.0 and 10.0
+        double random2 = Math.random() * 500;
+        double random3 = Math.random() * 500;
+
+        double random4 = Math.random() * 500;
+        double random5 = Math.random() * 500;
+        double random6 = Math.random() * 500;
+
+        this.toolCallsCounter.add(value1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "fetchOrchestraDocuments"));
+        this.toolResponseTime.record(random1+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "fetchOrchestraDocuments"));
+
+        this.toolCallsCounter.add(value2, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "fetchJiraIssues"));
+        this.toolResponseTime.record(random2+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "fetchJiraIssues"));
+
+        this.toolCallsCounter.add(value3, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "updateJiraIssues"));
+        this.toolResponseTime.record(random3+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("toolName"), "updateJiraIssues"));
+
+
+
+        this.modelCallsCounter.add(value1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-4"));
+        this.modelResponseTime.record(random4+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-4"));
+
+        this.modelCallsCounter.add(value2, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-5"));
+        this.modelResponseTime.record(random5+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-5"));
+
+        this.modelCallsCounter.add(value3, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-4.1"));
+        this.modelResponseTime.record(random6+1, Attributes.of(AttributeKey.stringKey("XPort"), port,AttributeKey.stringKey("modelName"), "GPT-4'1"));
+
 
     }
 
@@ -50,7 +75,7 @@ public class Controller {
     }
     @GetMapping("/b")
     public String b() {
-        increase(3, 1.5, 2);
+        increase(3, 1, 2);
         return "pong";
     }
 
@@ -60,24 +85,26 @@ public class Controller {
         System.out.println("OpenTelemetry is running on port: " + port);
         System.out.println("****************************************************");
 
-        aCountr = openTelemetry.getMeter("david-metrics")
-                .counterBuilder("a-counter")
+        toolCallsCounter = openTelemetry.getMeter("david-metrics")
+                .counterBuilder("toolCalls")
                 .setDescription("A custom counter for demonstration purposes")
-                .setUnit("X")
                 .build();
 
-        bCountr = openTelemetry.getMeter("david-metrics")
-                .counterBuilder("b-counter")
+        modelCallsCounter = openTelemetry.getMeter("david-metrics")
+                .counterBuilder("modelCalls")
                 .setDescription("A custom counter for demonstration purposes")
-                .setUnit("X")
                 .build();
 
-        hHistoGram = openTelemetry.getMeter("david-metrics")
-                .histogramBuilder("h-histogram")
-                .setDescription("A custom histogram for demonstration purposes")
-                .setUnit("X")
+        modelResponseTime = openTelemetry.getMeter("david-metrics")
+                .histogramBuilder("modelResponseTime")
+                .setDescription("Model Response time")
+                .setUnit("milliseconds")
                 .build();
-        hHistoGram.record(0.5, Attributes.of(AttributeKey.stringKey("xxx"), "yyy"));
+        toolResponseTime = openTelemetry.getMeter("david-metrics")
+                .histogramBuilder("toolResponseTime")
+                .setDescription("Model Response time")
+                .setUnit("milliseconds")
+                .build();
         upDownCounter = openTelemetry.getMeter("david-metrics")
                 .upDownCounterBuilder("a-up-down-counter")
                 .setDescription("A custom histogram for demonstration purposes")
@@ -96,8 +123,8 @@ public class Controller {
                     long sleepTime = Random.nextInt(1000) + 500; // Sleep between 500ms and 1500ms
                     Thread.sleep(sleepTime);
                     int value1 = Random.nextInt(10) + 1; // Random value between 1 and 10
-                    double value2 = Random.nextDouble() * 10; // Random double value between 0.0 and 10.0
-                    int value3 = Random.nextInt(5) + 1; // Random value between 1 and 5
+                    int value2 = Random.nextInt(10) +1; // Random double value between 0.0 and 10.0
+                    int value3 = Random.nextInt(10) + 1; // Random value between 1 and 5
                     increase(value1, value2, value3);
                     increase(10,10);
                 } catch (InterruptedException e) {
