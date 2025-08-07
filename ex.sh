@@ -1,0 +1,8 @@
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8081 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8080 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8079 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8078 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8077 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8076 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8075 && java -jar build/libs/otel-example.jar
+export OTEL_SERVICE_NAME="dvd-new-service-progress" && export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" && export SERVER_PORT=8074 && java -jar build/libs/otel-example.jar
